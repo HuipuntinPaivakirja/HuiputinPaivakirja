@@ -8,9 +8,6 @@ node_modules/
 dist/
 web-build/
 
-#EAS
-.idea
-
 # Native
 *.orig.*
 *.jks
@@ -38,4 +35,5 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
+#app.config.js
 app.config.js
