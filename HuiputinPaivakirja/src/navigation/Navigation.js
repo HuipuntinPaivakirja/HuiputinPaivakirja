@@ -18,6 +18,7 @@ function AppNavigator() {
   const { colors } = useTheme();
 
   if (loading) {
+    // Show loading indicator while checking if user is logged in
     return (
       <>
         <StatusBar
@@ -30,6 +31,7 @@ function AppNavigator() {
   }
 
   if (!user) {
+    // When user is not logged in, show AuthStackNavigator
     return (
       <>
         <StatusBar
@@ -41,6 +43,7 @@ function AppNavigator() {
     );
   }
 
+  // User logged in, show MainStackNavigator and Drawer
   return (
     <>
       <StatusBar
@@ -52,8 +55,8 @@ function AppNavigator() {
         screenOptions={{
           headerShown: false,
           drawerPosition: 'right',
-          swipeEnabled: false,
-          gestureEnabled: false
+          swipeEnabled: false, // Disable drawer gesture
+          gestureEnabled: false // Disable all drawer gestures
         }}
       >
         <Drawer.Screen name="MainStack" component={MainStackNavigator} />
