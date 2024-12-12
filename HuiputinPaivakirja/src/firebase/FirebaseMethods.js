@@ -83,7 +83,7 @@ const saveRouteToFirebase = async (imageUri, routeInfo) => {
                 routeHoldColor: routeInfo.holdColor,
                 routeGradeVotes: [],
                 votedForDelete: [],
-                sentBy: [], // Tähän tulee lista käyttäjän id:stä, joka on lähettänyt reitin
+                sentBy: [],
                 votedGrade: '',
 
 
@@ -146,13 +146,12 @@ const fetchUserData = (userId, setUserData) => {
 const AddUserInfo = async (userId, data) => {
     console.log('Adding user info:', data);
     if (!userId){
-        alert('Miten vittu pääsit tänne?')
         return
     }
     try {
         const userDocRef = doc(db, 'users', userId);
             //tallentaa tiedot
-        await updateDoc(userDocRef, data, { merge: true }); //mergellä pysty ainaki vaihtamaan vaan yhtäkin tietoa
+        await updateDoc(userDocRef, data, { merge: true });
     } catch (error) {
         console.error('Error saving data to Firestore:', error);
     }
@@ -205,6 +204,9 @@ const voteForDelete = async (routeId) => {
     }
 };
 
+/**
+ * Cancel a vote for deleting a route. The vote is removed from the route document. 
+ */
 const cancelVoteForDelete = async (routeId, vote) => {
     try {
         const routeDocRef = doc(routes, routeId);
@@ -231,7 +233,7 @@ const setRouteInvisible = async (markerId) => {
 }
 
 /**
- * Updates the route document to mark the route as sent by the user. The grade vote is added to the route document.
+ * Updates the route document to mark the route as sent by the user.
  * The user document is updated to include the sent route in the users document.
  */
 const markRouteAsSent = async (routeId, tryCount) => {
@@ -253,7 +255,10 @@ const markRouteAsSent = async (routeId, tryCount) => {
   }
 };
 
-const voteForGrade = async (routeId, existingVotes, gradeVote) => {
+/**
+ * Updates the route document for voting for the grade of the route.
+ */
+const voteForGrade = async (routeId, existingVotes, gradeVote, gradeColor) => {
     try {
         const routeDocRef = doc(routes, routeId);
         let newVotes = [];
@@ -265,10 +270,11 @@ const voteForGrade = async (routeId, existingVotes, gradeVote) => {
             newVotes = [...existingVotes,{grade: gradeVote, votedAt: new Date().toISOString(), votedBy: auth.currentUser.uid}];
             console.log('Updated routeGradeVotes:', newVotes);
         }
-
+        console.log('new vote:', gradeVote);
+        console.log('Existing routeGradeVotes:', existingVotes);
         const updatedGradeVotes = newVotes.map(vote => vote.grade);
         // Lasketaan keskiarvo ConvertGrade funktiolla -> Calculate.js
-        const averageGrade = convertGrade(updatedGradeVotes);
+        const averageGrade = convertGrade(updatedGradeVotes, gradeColor);
         console.log('Calculated averageGrade:', averageGrade);
 
         // Päivitys
@@ -281,6 +287,9 @@ const voteForGrade = async (routeId, existingVotes, gradeVote) => {
     }
 };
 
+/**
+ * Updates the route document to cancel the route as sent by the user.
+ */
 const cancelRouteAsSent = async (routeId, tryCount, sentAt) => {
     try {
         const routeDocRef = doc(routes, routeId);
@@ -346,6 +355,9 @@ const retrieveBoulderHistory = async () => {
     }
 }
 
+/**
+ * Returns the number of tries for the user on a given route.
+ */
 const getRouteTries = async (routeId) => {
     try {
         const userDocRef = doc(users, auth.currentUser.uid);
