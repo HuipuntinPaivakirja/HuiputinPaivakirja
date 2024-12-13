@@ -36,6 +36,23 @@ const Map = ({ handleLongPress, newMarker, markers, clusters, handleMarkerPress,
   const { isDarkTheme } = useCustomTheme();
   const { colors } = useTheme();
   
+  // Color mapping for markers
+  const colorMap = {
+    red: '#ff3333',     // Brighter red
+    blue: '#4169e1',    // Royal blue
+    green: '#32cd32',   // Lime green
+    yellow: '#ffd700',  // Gold
+    pink: '#ff69b4',    // Hot pink
+    orange: '#ff8c00',  // Dark orange
+    purple: '#9370db',  // Medium purple
+    black: '#2f4f4f',   // Dark slate gray
+    white: '#f5f5f5',   // White smoke
+  };
+
+  // Function to get adjusted color
+  const getAdjustedColor = (baseColor) => {
+    return colorMap[baseColor.toLowerCase()] || baseColor;
+  };
 
   // Scalefactor from the MapScreen component
   useEffect(() => {
@@ -183,8 +200,21 @@ const Map = ({ handleLongPress, newMarker, markers, clusters, handleMarkerPress,
                   const scaled = scaleCoordinates(marker.x, marker.y);
                   return (
                   <Svg key={marker.id} style={{position: 'absolute', left: scaled.x - 4, top: scaled.y - 4, width: 8, height: 8, zIndex: 100 }} onPress={() => handleMarkerPress(marker)}>
-                    <Circle cx={scaled.x} cy={scaled.y} r={8} fill={marker.gradeColor} onPress={() => {}}/>
-                    <Circle cx={scaled.x} cy={scaled.y} r={5.5} fill={marker.holdColor}/>
+                    <Circle 
+                      cx={scaled.x} 
+                      cy={scaled.y} 
+                      r={8} 
+                      fill={getAdjustedColor(marker.gradeColor)} 
+                      opacity={0.7}
+                      onPress={() => {}}
+                    />
+                    <Circle 
+                      cx={scaled.x} 
+                      cy={scaled.y} 
+                      r={5.5} 
+                      fill={getAdjustedColor(marker.holdColor)}
+                      opacity={0.7}
+                    />
                   </Svg>
                   )
                 }
