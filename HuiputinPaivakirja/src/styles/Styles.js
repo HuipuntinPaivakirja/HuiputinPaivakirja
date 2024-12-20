@@ -23,7 +23,6 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 16,
     },
     containerBottom: {
         position: 'absolute',
@@ -69,7 +68,7 @@ export const styles = StyleSheet.create({
     },
     input: {
         marginBottom: 10,
-        backgroundColor: 'white',
+        //color: 'white',
     },
     greetingContainer: {
         marginTop: 100,
@@ -84,6 +83,12 @@ export const styles = StyleSheet.create({
         fontSize: 18,
         marginBottom: 10,
     },
+    marginLeft16: {
+        marginLeft: 16,
+    },
+    bold: {
+        fontWeight: 'bold',
+    },
     notification: {
         position: 'absolute',
         top: 70,
@@ -92,7 +97,7 @@ export const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.7)',
         padding: 10,
         zIndex: 1,
-      },
+    },
     notificationText: {
         color: 'white',
         textAlign: 'center',
@@ -124,6 +129,55 @@ export const styles = StyleSheet.create({
         resizeMode: 'contain', 
         marginTop: 32, 
         marginBottom: 16 
+    },
+    ClickableRouteContainer: {
+        width: '100%',
+        height: 65,
+        marginBottom: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderRadius: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    verticalContainerRouteInfo: {
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'left',
+        marginLeft: 20,
+        marginTop: 4,
+        marginBottom: 4,
+    },
+    routeTriesContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'flex-end',
+    },
+    routeTriesIndicator: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginRight: 20,
+    },
+    smallText: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        margin: 5
+    },
+    horizontalSpaceBetween: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: 16,
+    },
+    counterContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginTop: 20,
     },
 });
 

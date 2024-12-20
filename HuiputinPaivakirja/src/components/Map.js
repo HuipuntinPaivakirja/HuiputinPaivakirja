@@ -8,6 +8,18 @@ import Animated, { useSharedValue, withSpring } from 'react-native-reanimated';
 import sectors from '../Helpers/Sectors';
 import SectorOverlay from './SectorOverlay';
 import { ORIGINAL_IMAGE_WIDTH, ORIGINAL_IMAGE_HEIGHT } from '../Helpers/Sectors';
+import { useTheme } from 'react-native-paper';
+import { useCustomTheme } from '../theme/CustomTheme';
+
+/**
+ * Map component displays the map image with markers and sectors.
+ * @param {Function} handleLongPress - Function to handle long press on the map
+ * @param {Object} newMarker - Object with the new marker data
+ * @param {Array} markers - Array of markers provided by the MarkerProvider
+ * @param {Array} clusters - Array of clusters provided by the MarkerProvider
+ * @param {Function} handleMarkerPress - Function to handle marker press
+ * @param {Function} setScaleFactors - Function to set the scale factors
+ */
 
 const Map = ({ handleLongPress, newMarker, markers, clusters, handleMarkerPress, setScaleFactors }) => {
   const translateX = useSharedValue(0);
@@ -21,9 +33,11 @@ const Map = ({ handleLongPress, newMarker, markers, clusters, handleMarkerPress,
   const [showMarkers, setShowMarkers] = useState(false);
   const [scaleFactorX, setScaleFactorX] = useState(1);
   const [scaleFactorY, setScaleFactorY] = useState(1);
+  const { isDarkTheme } = useCustomTheme();
+  const { colors } = useTheme();
   
 
-  //Scalefactor from the MapScreen component
+  // Scalefactor from the MapScreen component
   useEffect(() => {
     setScaleFactors({ 
       scaleFactorX, 
@@ -37,7 +51,6 @@ const Map = ({ handleLongPress, newMarker, markers, clusters, handleMarkerPress,
   const longPress = Gesture.LongPress()
     .onStart((e) => {
       try {
-        //console.log('Long press ended event: ', e);
         handleLongPress(e);
       }catch (error) {
         console.log('Error in long press event: ', error);
@@ -49,10 +62,8 @@ const Map = ({ handleLongPress, newMarker, markers, clusters, handleMarkerPress,
   const pinch = Gesture.Pinch()
     .onTouchesMove((e) => {
       if(e.numberOfTouches !==2 ) return;
-      //console.log('Pinch move event: ', e);
     })
     .onBegin((e) => {
-      //console.log('Pinch begin event: ', e);
       initialScale.value = scale.value;
     })
     .onUpdate((e) => {
@@ -63,9 +74,7 @@ const Map = ({ handleLongPress, newMarker, markers, clusters, handleMarkerPress,
         setShowMarkers(false);
       }
       try {
-        //console.log('Pinch update event: ', e);
         scale.value = initialScale.value * e.scale;
-        //console.log('Scale value: ', scale.value);
       } catch (error) {
         console.log('Error in pinch event: ', error);
       }
@@ -77,18 +86,14 @@ const Map = ({ handleLongPress, newMarker, markers, clusters, handleMarkerPress,
     .maxPointers(1)
     .onBegin((e) => {
       if(e.numberOfPointers > 1) return;
-      //console.log('Pan begin event: ', e);
       initialTranslateX.value = translateX.value;
       initialTranslateY.value = translateY.value;
     })
     .onUpdate((e) => {
       try {
         if(e.numberOfPointers > 1) return;
-        //console.log('Pan update event: ', e);
         translateX.value = initialTranslateX.value + e.translationX / scale.value;
         translateY.value = initialTranslateY.value + e.translationY / scale.value;
-        //console.log('TranslateX value: ', translateX.value);
-        //console.log('TranslateY value: ', translateY.value);
       } catch (error) {
         console.log('Error in pan event: ', error);
       }
@@ -96,7 +101,6 @@ const Map = ({ handleLongPress, newMarker, markers, clusters, handleMarkerPress,
   )
   
   .onEnd(() => {
-    //console.log('Pan end event')
     if (scale.value <= 1) {
       const scaledWidth = imageWidth * scale.value;
       const scaledHeight = imageHeight * scale.value;
@@ -143,12 +147,15 @@ const Map = ({ handleLongPress, newMarker, markers, clusters, handleMarkerPress,
   });
 
   return (
-    <GestureHandlerRootView style={[styles.centeredbaseContainer]}>
+    <GestureHandlerRootView style={[styles.centeredbaseContainer, { backgroundColor: colors.background }]}>
         <GestureDetector gesture={Gesture.Race(pinch, pan, longPress)}>
-          <Animated.View style={[styles.mapImage, {transform: [{scale: scale}, {translateX: translateX}, {translateY: translateY}]}]}>
+          <Animated.View style={[styles.mapImage, {
+            transform: [{scale: scale}, {translateX: translateX}, {translateY: translateY}],
+            backgroundColor: colors.background
+          }]}>
             <Animated.Image
               source = {require('../../assets/BoulderMap_transformed_2.png')}
-              style = {[styles.mapImage]}
+              style = {[styles.mapImage, { tintColor: isDarkTheme ? '#ffffff' : undefined }]}
               onLayout = {handleImageLayout}
             />
             <Svg style={styles.svgOverlay}>

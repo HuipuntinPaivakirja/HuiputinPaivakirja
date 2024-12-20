@@ -37,6 +37,7 @@ export default function ProfileScreen({ navigation }) {
     }
   };
   
+  // Listen for changes in the user's data
   useEffect(() => {
       const unsubscribe = fetchUserData(userId, (data) => {
           setUserData(data);
@@ -45,6 +46,7 @@ export default function ProfileScreen({ navigation }) {
       return () => unsubscribe();
   }, [userId])
 
+  // Save the user data when the form is submitted
   const saveData = async (userData) => {
     setLoading(true);
     setShowForm(false);
@@ -56,13 +58,23 @@ export default function ProfileScreen({ navigation }) {
         Alert.alert("Error saving user data. Please try again.");
     }
   }
+  
+  // Navigate to the BoulderHistoryScreen
+  const handleBoulderHistory = () => {
+    navigation.navigate('BoulderHistoryScreen');
+  }
 
   return (
     <View style={[styles.screenBaseContainer, { backgroundColor: colors.background }]}>
       {/* Include the DrawerButton */}
       <DrawerButton navigation={navigation} />
       <View style={styles.headerContainer}>
-        <Text style={{fontFamily: fonts.special.fontFamily, fontSize: 28}}>
+        <Text style={{
+          fontFamily: fonts.special.fontFamily,
+          fontSize: 28,
+          textAlign: 'center',
+          color: fonts.special.color
+        }}>
           Profile
         </Text>
       </View>
@@ -92,6 +104,17 @@ export default function ProfileScreen({ navigation }) {
           style={styles.buttonLonger}
         >
           Delete my account
+        </Button>
+        <Button
+          mode="contained"
+          onPress={handleBoulderHistory}
+          icon="history"
+          buttonColor={colors.accent}
+          contentStyle={styles.buttonContent}
+          labelStyle={styles.buttonLabel}
+          style={styles.buttonLonger}
+        >
+          Boulder History
         </Button>
       </View>}
       </>}
